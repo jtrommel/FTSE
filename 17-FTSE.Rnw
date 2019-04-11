@@ -170,6 +170,9 @@ for (j in seq(2, N, 1)) {
   forecast.mod2$lwr[j] <- forecast.mod2$fit[j] - 1.96*sqrt(j)*sigma
   forecast.mod2$upr[j] <- forecast.mod2$fit[j] + 1.96*sqrt(j)*sigma
 }
+mu.end <- forecast.mod2$fit[N]
+sigma.end <- sqrt(N)*sigma
+my.title <- paste ("FTSE-100 index on", datum, sep = " ", collapse = NULL)
 p1 <- ggplot() +
     geom_point(data = Fcl19, aes(x = i, y = close), size = 1, color = "red") +
     geom_line(data = Fcl19, aes(x = i, y = trend), color = "blue") +
@@ -178,11 +181,12 @@ p1 <- ggplot() +
     geom_ribbon(data = forecast.mod1, aes(x = i, ymin = lwr, ymax = upr), fill = "blue", alpha=0.3) +
     geom_line(data = forecast.mod2, aes(x = i, y= fit), color = "black") +
     geom_ribbon(data = forecast.mod2, aes(x = i, ymin = lwr, ymax = upr), fill = "black", alpha=0.3) +
-    geom_hline(yintercept = Fcl$close[3100]) +
-    labs(title = "FTSE-100 closing index 2019: 2019-04-09", x = "index", y="FTSE-close") +
+    geom_hline(yintercept = 7401.94) +
+    ggtitle(my.title) +
+    labs(x = "index", y="FTSE-close") +
     scale_y_continuous(limits = c(6000, 9000)) +
     JT.theme
-list(p1, mod1, mod2)
+list(p1, mod1, mod2, mu.end, sigma.end)
 }
 @
 
@@ -195,11 +199,12 @@ list(p1, mod1, mod2)
 
 \section{Initial conditions}
 
-\subsection{Start and end date}
+\subsection{Question to answer}
 
-<<>>=
-start <- ymd("2019-04-04")
-end <- ymd("2019-05-24")
+Will the closing value of the FTSE-100 index on 2019-05-24 be \emph{higher} than the closing value on 2019-04-04 (7401.94)? Give answer in probability ranges 0\% - 9\%, 10\% - 19\%, ... 90\% - 99\%.
+
+<<echo=FALSE>>=
+ref.value <- 7401.94
 @
 
 \subsection{Reading the time series on 2019-04-04}
@@ -238,22 +243,23 @@ fcst[[1]]
 \setfloatalignment{b}
 \end{figure}
 
-Linear regression model (mod1):
-<<>>=
-tidy(fcst[[2]])
-glance(fcst[[2]])
-@
-
 Autoregression model (mod2):
 <<>>=
 tidy(fcst[[3]])
 glance(fcst[[3]])
 @
 
-\subsection{2019-04-10}
+\newthought{Answer} to forecast question:
+<<echo=FALSE>>=
+prob.higher <- round(100*(1 - pnorm(ref.value, fcst[[4]], fcst[[5]])),2)
+@
+
+The probability that the FTSE-100 index on 2019-05-24 will be greater than \Sexpr{ref.value} is \textbf{\Sexpr{prob.higher}}\%.
+
+\subsection{2019-04-11}
 
 <<label=forecast2, fig=TRUE, include=FALSE, echo=FALSE>>=
-fcst <- make.forecast.FTSE("2019-04-10")
+fcst <- make.forecast.FTSE("2019-04-11")
 fcst[[1]]
 @
 
@@ -264,18 +270,18 @@ fcst[[1]]
 \setfloatalignment{b}
 \end{figure}
 
-Linear regression model (mod1):
-<<>>=
-tidy(fcst[[2]])
-glance(fcst[[2]])
-@
-
 Autoregression model (mod2):
 <<>>=
 tidy(fcst[[3]])
 glance(fcst[[3]])
 @
 
+\newthought{Answer} to forecast question:
+<<echo=FALSE>>=
+prob.higher <- round(100*(1 - pnorm(ref.value, fcst[[4]], fcst[[5]])),2)
+@
+
+The probability that the FTSE-100 index on 2019-05-24 will be greater than \Sexpr{ref.value} is \textbf{\Sexpr{prob.higher}}\%.
 
 \printindex
 
