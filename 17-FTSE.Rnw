@@ -283,6 +283,33 @@ prob.higher <- round(100*(1 - pnorm(ref.value, fcst[[4]], fcst[[5]])),2)
 
 The probability that the FTSE-100 index on 2019-05-24 will be greater than \Sexpr{ref.value} is \textbf{\Sexpr{prob.higher}}\%.
 
+\subsection{2019-04-19}
+
+<<label=forecast3, fig=TRUE, include=FALSE, echo=FALSE>>=
+fcst <- make.forecast.FTSE("2019-04-19")
+fcst[[1]]
+@
+
+\begin{figure}
+\includegraphics[width=0.85\textwidth]{FTSE-forecast3}
+\caption{}
+\label{fig:forecast3}
+\setfloatalignment{b}
+\end{figure}
+
+Autoregression model (mod2):
+<<>>=
+tidy(fcst[[3]])
+glance(fcst[[3]])
+@
+
+\newthought{Answer} to forecast question:
+<<echo=FALSE>>=
+prob.higher <- round(100*(1 - pnorm(ref.value, fcst[[4]], fcst[[5]])),2)
+@
+
+The probability that the FTSE-100 index on 2019-05-24 will be greater than \Sexpr{ref.value} is \textbf{\Sexpr{prob.higher}}\%.
+
 \printindex
 
 \newpage
